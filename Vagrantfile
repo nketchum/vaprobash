@@ -56,6 +56,7 @@ else
   server_cpus = 1
   server_memory = 512
 end
+
 server_swap = server_memory
 
 if php_version == "7.0"
