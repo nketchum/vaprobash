@@ -46,7 +46,7 @@ if [[ $PHP_IS_INSTALLED -eq 0 ]]; then
 	PHP_CMD=$2
 	PHP_ENMOD=$3
 	# Make php use it to send mail
-  echo "sendmail_path = /usr/bin/env $(which catchmail)" | sudo tee ${PHP_PATH}/mods-available/mailcatcher.ini
+  echo "sendmail_path = /usr/bin/env $(which catchmail)" | sudo tee "${PHP_PATH}"/mods-available/mailcatcher.ini
 	sudo $PHP_ENMOD mailcatcher
 	sudo service $PHP_CMD restart
 fi

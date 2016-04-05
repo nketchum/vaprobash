@@ -34,7 +34,7 @@ mongo_enable_remote   = "true"
 hhvm                  = "false"
 php_version           = "7.0"
 php_timezone          = server_timezone
-composer_packages     = ["phpunit/phpunit:4.0.*"]
+composer_packages     = ["phpunit/phpunit:4.0.*", "drush/drush:dev-master"]
 nodejs_version        = "latest"
 nodejs_packages       = ["grunt-cli", "gulp", "bower", "pm2"]
 ruby_version          = "latest"
@@ -121,7 +121,7 @@ Vagrant.configure("2") do |config|
     config.cache.synced_folder_opts = { type: :nfs, mount_options: ['rw', 'vers=3', 'tcp', 'nolock'] }
   end
 
-  # Remote Provisioning
+  # Remote Scripts
   config.vm.provision "shell", path: "#{github_url}/scripts/base.sh", args: [github_url, server_swap, server_timezone], run: "once"
   config.vm.provision "shell", path: "#{github_url}/scripts/php.sh", args: [php_timezone, hhvm, php_version, php_path, php_cmd], run: "once"
   config.vm.provision "shell", path: "#{github_url}/scripts/vim.sh", args: github_url, run: "once"
@@ -140,7 +140,15 @@ Vagrant.configure("2") do |config|
   config.vm.provision "shell", path: "#{github_url}/scripts/mailcatcher.sh", args: [php_path, php_cmd, php_enmod], run: "once"
   config.vm.provision "shell", path: "#{github_url}/scripts/git-ftp.sh", privileged: false, run: "once"
 
-  # Local Provisioning
+  # Local Scripts
   config.vm.provision "shell", path: "./local-script.sh", privileged: false, args: [php_path, php_cmd], run: "once"
+
+  # System Restart
+  if Vagrant.has_plugin?("vagrant-reload")
+    config.vm.provision :reload
+  end
+
+  # Cleanup
+  config.vm.provision "shell", path: "#{github_url}/scripts/cleanup.sh"
 
 end

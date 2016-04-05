@@ -7,7 +7,7 @@ echo ">>> Installing Additional Packages"
 sudo apt-get install htop iotop
 
 echo ">>> Installing Drush Utility"
-composer global require drush/drush:dev-master
+sudo composer global require drush/drush:dev-master
 
 echo ">>> Installing Drupal Console"
 curl https://drupalconsole.com/installer -L -o drupal.phar
@@ -25,3 +25,5 @@ echo ">>> Configuring Home Directory"
 touch ~/.hushlogin
 ln -sf /vagrant ~/www
 ln -sf /vagrant/scripts/bin ~/.bin
+if [ -e ~/.bash_profile ]; then sudo rm ~/.bash_profile; fi
+if [ -e ~/.zlogin ]; then sudo rm ~/.zlogin; fi
