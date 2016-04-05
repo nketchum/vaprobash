@@ -1,23 +1,27 @@
 #!/usr/bin/env bash
 
-echo ">>> Installing Xtra Apt Packages"
+PHP_PATH=$1
+PHP_CMD=$2
+
+echo ">>> Installing Additional Packages"
 sudo apt-get install htop iotop
 
-echo ">>> Installing Drush"
+echo ">>> Installing Drush Utility"
 composer global require drush/drush:dev-master
 
 echo ">>> Installing Drupal Console"
 curl https://drupalconsole.com/installer -L -o drupal.phar
 sudo mv drupal.phar /usr/local/bin/drupal
 sudo chmod +x /usr/local/bin/drupal
-drupal init --override
+sudo printf "\n\n#Drupal Console\nsource \"\$HOME/.console/console.rc\"" | sudo tee /root/.profile >> ~/.profile
+ln -sf ~/.console/drupal.fish ~/.config/fish/completions/drupal.fish
 
-echo ">>> Configuring Environments"
-printf "\n\n# Miscellaneous binaries\nexport PATH=\"\$PATH:\$HOME/bin:\$HOME/.bin:./bin:./.bin\"" >> /home/vagrant/.profile
-sudo sed -i "s/;always_populate_raw_post_data = .*/always_populate_raw_post_data = -1/" /etc/php5/fpm/php.ini
-sudo service php5-fpm restart
+echo ">>> Configuring Environment"
+sudo printf "\n\n# Export Misc. Binaries\nexport PATH=\"\$PATH:\$HOME/bin:\$HOME/.bin:./bin:./.bin\"" | sudo tee /root/.profile >> ~/.profile
+sudo sed -i "s/;always_populate_raw_post_data = .*/always_populate_raw_post_data = -1/" "${PHP_PATH}/fpm/php.ini"
+sudo service $PHP_CMD restart
 
-echo ">>> Customizing Homedir"
+echo ">>> Configuring Home Directory"
 touch ~/.hushlogin
-ln -svf /vagrant ~/www
-ln -svf /vagrant/scripts/bin ~/.bin
+ln -sf /vagrant ~/www
+ln -sf /vagrant/scripts/bin ~/.bin

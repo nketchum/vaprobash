@@ -23,7 +23,7 @@ mongo_version         = "3.0"
 mongo_enable_remote   = "false"
 
 # Langs and Pkgs
-composer_packages     = ["phpunit/phpunit:4.0.*", "drush/drush:master-dev"]
+composer_packages     = ["phpunit/phpunit:4.0.*"]
 go_version            = "latest"
 hhvm                  = "false"
 nodejs_packages       = ["grunt-cli", "gulp", "bower", "pm2"]
@@ -35,7 +35,6 @@ rabbitmq_password     = "123"
 ruby_gems             = ["sass", "compass"]
 ruby_version          = "latest"
 sphinxsearch_version  = "rel22"
-
 
 ###
 # Experts-only starting here...
@@ -54,6 +53,14 @@ else
 end
 server_swap           = server_memory
 
+if php_version == "7.0"
+  php_path = "/etc/php/7.0"
+  php_cmd  = "php7.0-fpm"
+else
+  php_path = "/etc/php5"
+  php_cmd  = "php5-fpm"
+end
+
 Vagrant.configure("2") do |config|
   config.vm.box = "trusty.dev"
   config.vm.define "trusty" do |the_tango|
@@ -67,7 +74,7 @@ Vagrant.configure("2") do |config|
     config.hostmanager.ignore_private_ip = false
     config.hostmanager.include_offline = false
   else
-    warn "Recommended plugin 'vagrant-hostmanager' is not installed. Run 'vagrant plugin install vagrant-hostmanager' to install."
+    warn "Recommended plugin 'vagrant-hostmanager' is not installed."
   end
 
   if Vagrant.has_plugin?("vagrant-auto_network")
@@ -103,7 +110,7 @@ Vagrant.configure("2") do |config|
 
   config.vm.provider "vmware_fusion" do |vb, override|
     override.vm.box_url = "~/Boxes/ubuntu-14-04-x64-vmware.box"
-    vb.vmx["memsize"] = server_memory
+    vb.vmx["memsize"]   = server_memory
   end
 
   if Vagrant.has_plugin?("vagrant-cachier")
@@ -113,31 +120,31 @@ Vagrant.configure("2") do |config|
         mount_options: ['rw', 'vers=3', 'tcp', 'nolock']
     }
   else
-    warn "Recommeded plugin 'vagrant-cachier' is not installed. Run 'vagrant plugin install vagrant-cachier' to install."
+    warn "Recommeded plugin 'vagrant-cachier' is not installed."
   end
 
   config.vm.provider :digital_ocean do |provider, override|
     override.ssh.private_key_path = '~/.ssh/id_rsa'
-    override.ssh.username = 'vagrant'
-    override.vm.box = 'digital_ocean'
-    override.vm.box_url = "https://github.com/smdahlen/vagrant-digitalocean/raw/master/box/digital_ocean.box"
-    provider.token = 'YOUR TOKEN'
-    provider.image = 'ubuntu-14-04-x64'
-    provider.region = 'nyc2'
-    provider.size = '512mb'
+    override.ssh.username         = 'vagrant'
+    override.vm.box               = 'digital_ocean'
+    override.vm.box_url           = "https://github.com/smdahlen/vagrant-digitalocean/raw/master/box/digital_ocean.box"
+    provider.token                = 'YOUR TOKEN'
+    provider.image                = 'ubuntu-14-04-x64'
+    provider.region               = 'nyc2'
+    provider.size                 = '512mb'
   end
 
   # Remote Provisioning
   config.vm.provision "shell", path: "#{github_url}/scripts/base.sh", args: [github_url, server_swap, server_timezone], run: "once"
   config.vm.provision "shell", path: "#{github_url}/scripts/base_box_optimizations.sh", privileged: true, run: "once"
-  config.vm.provision "shell", path: "#{github_url}/scripts/php.sh", args: [php_timezone, hhvm, php_version], run: "once"
+  config.vm.provision "shell", path: "#{github_url}/scripts/php.sh", args: [php_timezone, hhvm, php_version, php_path, php_cmd], run: "once"
   config.vm.provision "shell", path: "#{github_url}/scripts/vim.sh", args: github_url, run: "once"
   config.vm.provision "shell", path: "#{github_url}/scripts/docker.sh", args: "permissions", run: "once"
   config.vm.provision "shell", path: "#{github_url}/scripts/nginx.sh", args: [server_ip, public_folder, hostname, github_url], run: "once"
   config.vm.provision "shell", path: "#{github_url}/scripts/mysql.sh", args: [mysql_root_password, mysql_version, mysql_enable_remote], run: "once"
   config.vm.provision "shell", path: "#{github_url}/scripts/pgsql.sh", args: pgsql_root_password, run: "once"
   config.vm.provision "shell", path: "#{github_url}/scripts/sqlite.sh", run: "once"
-  config.vm.provision "shell", path: "#{github_url}/scripts/mongodb.sh", args: [mongo_enable_remote, mongo_version], run: "once"
+  config.vm.provision "shell", path: "#{github_url}/scripts/mongodb.sh", args: [mongo_enable_remote, mongo_version, php_version, php_path, php_cmd], run: "once"
   config.vm.provision "shell", path: "#{github_url}/scripts/memcached.sh", run: "once"
   config.vm.provision "shell", path: "#{github_url}/scripts/redis.sh", run: "once"
   config.vm.provision "shell", path: "#{github_url}/scripts/rabbitmq.sh", args: [rabbitmq_user, rabbitmq_password], run: "once"
@@ -147,6 +154,6 @@ Vagrant.configure("2") do |config|
   config.vm.provision "shell", path: "#{github_url}/scripts/git-ftp.sh", privileged: false, run: "once"
 
   # Local Provisioning
-  config.vm.provision "shell", path: "./local-script.sh", run: "once"
+  config.vm.provision "shell", path: "./local-script.sh", privileged: false, args: [php_path, php_cmd], run: "once"
 
 end

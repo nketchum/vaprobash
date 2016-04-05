@@ -236,7 +236,7 @@ if [[ $ForceOverwrite -eq 1 ]]; then
     # remove symlink from sites-enabled directory
     rm -f "/etc/nginx/sites-enabled/${ServerBlockName}" &>/dev/null
     if [[ $? -eq 0 ]]; then
-        # if file has been removed, provide user with information that existing server 
+        # if file has been removed, provide user with information that existing server
         # block is being overwritten
         echo ">>> ${ServerBlockName} is enabled and will be overwritten"
         echo ">>> to enable this server block execute 'ngxen ${ServerBlockName}' or use the -e flag"

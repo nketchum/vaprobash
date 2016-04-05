@@ -5,12 +5,8 @@ export LANG=C.UTF-8
 PHP_TIMEZONE=$1
 HHVM=$2
 PHP_VERSION=$3
-
-if [ $PHP_VERSION == "7.0" ]; then
-    PHP_PATH="/etc/php/7.0"
-else
-    PHP_PATH="/etc/php5"
-fi
+PHP_PATH=$4
+PHP_CMD=$5
 
 if [[ $HHVM == "true" ]]; then
 
@@ -106,9 +102,6 @@ EOF
     sudo sed -i "s/;date.timezone =.*/date.timezone = ${PHP_TIMEZONE/\//\\/}/" $PHP_PATH/fpm/php.ini
     sudo sed -i "s/;date.timezone =.*/date.timezone = ${PHP_TIMEZONE/\//\\/}/" $PHP_PATH/cli/php.ini
 
-    if [ $PHP_VERSION == "7.0" ]; then
-        sudo service php7.0-fpm restart
-    else
-        sudo service php5-fpm restart
-    fi
+    sudo service $PHP_CMD restart
+
 fi

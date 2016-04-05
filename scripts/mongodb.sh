@@ -18,7 +18,7 @@ sudo apt-get update
 
 # Install MongoDB
 # -qq implies -y --force-yes
-sudo apt-get install -qq mongodb-org
+sudo apt-get install -qq mongodb-org pkg-config libssl-dev
 
 # Make MongoDB connectable from outside world without SSH tunnel
 if [ $1 == "true" ]; then
@@ -32,18 +32,27 @@ php -v > /dev/null 2>&1
 PHP_IS_INSTALLED=$?
 
 if [ $PHP_IS_INSTALLED -eq 0 ]; then
+
+    PHP_VERSION=$3
+    PHP_PATH=$4
+    PHP_CMD=$5
+
     # install dependencies
-    sudo apt-get -y install php-pear php5-dev
+    if [ $PHP_VERSION == "7.0" ]; then
+        sudo apt-get -y install php-pear php7.0-dev
+    else
+        sudo apt-get -y install php-pear php5-dev
+    fi
 
     # install php extension
     echo "no" > answers.txt
-    sudo pecl install mongo < answers.txt
+    sudo pecl install mongodb < answers.txt
     rm answers.txt
 
     # add extension file and restart service
-    echo 'extension=mongo.so' | sudo tee /etc/php5/mods-available/mongo.ini
+    echo 'extension=mongodb.so' | sudo tee ${PHP_PATH}/mods-available/mongo.ini
 
-    ln -s /etc/php5/mods-available/mongo.ini /etc/php5/fpm/conf.d/mongo.ini
-    ln -s /etc/php5/mods-available/mongo.ini /etc/php5/cli/conf.d/mongo.ini
-    sudo service php5-fpm restart
+    ln -s ${PHP_PATH}/mods-available/mongo.ini ${PHP_PATH}/fpm/conf.d/mongo.ini
+    ln -s ${PHP_PATH}/mods-available/mongo.ini ${PHP_PATH}/cli/conf.d/mongo.ini
+    sudo service $PHP_CMD restart
 fi
