@@ -4,7 +4,7 @@
 # Config Github Settings
 github_username = "nketchum"
 github_repo     = "Vaprobash"
-github_branch   = "1.4.2.nketchum.0.1"
+github_branch   = "nketchum"
 github_url      = "https://raw.githubusercontent.com/#{github_username}/#{github_repo}/#{github_branch}"
 
 # Because this:https://developer.github.com/changes/2014-12-08-removing-authorizations-token/
@@ -89,7 +89,7 @@ sphinxsearch_version  = "rel22" # rel20, rel21, rel22, beta, daily, stable
 Vagrant.configure("2") do |config|
 
   # Set server to custom Ubuntu box
-  config.vm.box = "nketchum/trusty64"
+  config.vm.box = "trusty.dev"
 
   config.vm.define "trusty" do |foo|
   end
@@ -152,7 +152,7 @@ Vagrant.configure("2") do |config|
 
   # If using VMWare Fusion
   config.vm.provider "vmware_fusion" do |vb, override|
-    override.vm.box_url = ""
+    override.vm.box_url = "#{host_home}/Boxes/ubuntu-14-04-x64-vmware.box"
 
     # Set server memory
     vb.vmx["memsize"] = server_memory
@@ -354,6 +354,6 @@ Vagrant.configure("2") do |config|
   # Any local scripts you may want to run post-provisioning.
   # Add these to the same directory as the Vagrantfile.
   ##########
-  config.vm.provision "shell", path: "./local-script.sh"
+  # config.vm.provision "shell", path: "./local-script.sh"
 
 end
