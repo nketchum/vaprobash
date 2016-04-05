@@ -59,7 +59,6 @@ hhvm                  = "false"
 # PHP Options
 composer_packages     = [        # List any global Composer packages that you want to install
   "phpunit/phpunit:4.0.*",
-  "drupal/drush:master-dev",
 ]
 
 # Default web server document root
@@ -152,7 +151,7 @@ Vagrant.configure("2") do |config|
 
   # If using VMWare Fusion
   config.vm.provider "vmware_fusion" do |vb, override|
-    override.vm.box_url = "#{host_home}/Boxes/ubuntu-14-04-x64-vmware.box"
+    override.vm.box_url = "~/Boxes/ubuntu-14-04-x64-vmware.box"
 
     # Set server memory
     vb.vmx["memsize"] = server_memory
@@ -191,32 +190,32 @@ Vagrant.configure("2") do |config|
   ##########
 
   # Provision Base Packages
-  config.vm.provision "shell", path: "#{github_url}/scripts/base.sh", args: [github_url, server_swap, server_timezone]
+  config.vm.provision "shell", path: "#{github_url}/scripts/base.sh", args: [github_url, server_swap, server_timezone], run: "once"
 
   # optimize base box
-  config.vm.provision "shell", path: "#{github_url}/scripts/base_box_optimizations.sh", privileged: true
+  config.vm.provision "shell", path: "#{github_url}/scripts/base_box_optimizations.sh", privileged: true, run: "once"
 
   # Provision PHP
-  config.vm.provision "shell", path: "#{github_url}/scripts/php.sh", args: [php_timezone, hhvm, php_version]
+  config.vm.provision "shell", path: "#{github_url}/scripts/php.sh", args: [php_timezone, hhvm, php_version], run: "once"
 
   # Enable MSSQL for PHP
-  # config.vm.provision "shell", path: "#{github_url}/scripts/mssql.sh"
+  # config.vm.provision "shell", path: "#{github_url}/scripts/mssql.sh", run: "once"
 
   # Provision Vim
-  config.vm.provision "shell", path: "#{github_url}/scripts/vim.sh", args: github_url
+  config.vm.provision "shell", path: "#{github_url}/scripts/vim.sh", args: github_url, run: "once"
 
   # Provision Docker
-  config.vm.provision "shell", path: "#{github_url}/scripts/docker.sh", args: "permissions"
+  config.vm.provision "shell", path: "#{github_url}/scripts/docker.sh", args: "permissions", run: "once"
 
   ####
   # Web Servers
   ##########
 
   # Provision Apache Base
-  # config.vm.provision "shell", path: "#{github_url}/scripts/apache.sh", args: [server_ip, public_folder, hostname, github_url]
+  # config.vm.provision "shell", path: "#{github_url}/scripts/apache.sh", args: [server_ip, public_folder, hostname, github_url], run: "once"
 
   # Provision Nginx Base
-  config.vm.provision "shell", path: "#{github_url}/scripts/nginx.sh", args: [server_ip, public_folder, hostname, github_url]
+  config.vm.provision "shell", path: "#{github_url}/scripts/nginx.sh", args: [server_ip, public_folder, hostname, github_url], run: "once"
 
 
   ####
@@ -224,41 +223,41 @@ Vagrant.configure("2") do |config|
   ##########
 
   # Provision MySQL
-  config.vm.provision "shell", path: "#{github_url}/scripts/mysql.sh", args: [mysql_root_password, mysql_version, mysql_enable_remote]
+  config.vm.provision "shell", path: "#{github_url}/scripts/mysql.sh", args: [mysql_root_password, mysql_version, mysql_enable_remote], run: "once"
 
   # Provision PostgreSQL
-  config.vm.provision "shell", path: "#{github_url}/scripts/pgsql.sh", args: pgsql_root_password
+  config.vm.provision "shell", path: "#{github_url}/scripts/pgsql.sh", args: pgsql_root_password, run: "once"
 
   # Provision SQLite
-  config.vm.provision "shell", path: "#{github_url}/scripts/sqlite.sh"
+  config.vm.provision "shell", path: "#{github_url}/scripts/sqlite.sh", run: "once"
 
   # Provision RethinkDB
-  # config.vm.provision "shell", path: "#{github_url}/scripts/rethinkdb.sh", args: pgsql_root_password
+  # config.vm.provision "shell", path: "#{github_url}/scripts/rethinkdb.sh", args: pgsql_root_password, run: "once"
 
   # Provision Couchbase
-  # config.vm.provision "shell", path: "#{github_url}/scripts/couchbase.sh"
+  # config.vm.provision "shell", path: "#{github_url}/scripts/couchbase.sh", run: "once"
 
   # Provision CouchDB
-  # config.vm.provision "shell", path: "#{github_url}/scripts/couchdb.sh"
+  # config.vm.provision "shell", path: "#{github_url}/scripts/couchdb.sh", run: "once"
 
   # Provision MongoDB
-  config.vm.provision "shell", path: "#{github_url}/scripts/mongodb.sh", args: [mongo_enable_remote, mongo_version]
+  config.vm.provision "shell", path: "#{github_url}/scripts/mongodb.sh", args: [mongo_enable_remote, mongo_version], run: "once"
 
   # Provision MariaDB
-  # config.vm.provision "shell", path: "#{github_url}/scripts/mariadb.sh", args: [mysql_root_password, mysql_enable_remote]
+  # config.vm.provision "shell", path: "#{github_url}/scripts/mariadb.sh", args: [mysql_root_password, mysql_enable_remote], run: "once"
 
   # Provision Neo4J
-  # config.vm.provision "shell", path: "#{github_url}/scripts/neo4j.sh"
+  # config.vm.provision "shell", path: "#{github_url}/scripts/neo4j.sh", run: "once"
 
   ####
   # Search Servers
   ##########
 
   # Install Elasticsearch
-  # config.vm.provision "shell", path: "#{github_url}/scripts/elasticsearch.sh"
+  # config.vm.provision "shell", path: "#{github_url}/scripts/elasticsearch.sh", run: "once"
 
   # Install SphinxSearch
-  # config.vm.provision "shell", path: "#{github_url}/scripts/sphinxsearch.sh", args: [sphinxsearch_version]
+  # config.vm.provision "shell", path: "#{github_url}/scripts/sphinxsearch.sh", args: [sphinxsearch_version], run: "once"
 
   ####
   # Search Server Administration (web-based)
@@ -267,7 +266,7 @@ Vagrant.configure("2") do |config|
   # Install ElasticHQ
   # Admin for: Elasticsearch
   # Works on: Apache2, Nginx
-  # config.vm.provision "shell", path: "#{github_url}/scripts/elastichq.sh"
+  # config.vm.provision "shell", path: "#{github_url}/scripts/elastichq.sh", run: "once"
 
 
   ####
@@ -275,13 +274,13 @@ Vagrant.configure("2") do |config|
   ##########
 
   # Install Memcached
-  config.vm.provision "shell", path: "#{github_url}/scripts/memcached.sh"
+  config.vm.provision "shell", path: "#{github_url}/scripts/memcached.sh", run: "once"
 
   # Provision Redis (without journaling and persistence)
-  config.vm.provision "shell", path: "#{github_url}/scripts/redis.sh"
+  config.vm.provision "shell", path: "#{github_url}/scripts/redis.sh", run: "once"
 
   # Provision Redis (with journaling and persistence)
-  # config.vm.provision "shell", path: "#{github_url}/scripts/redis.sh", args: "persistent"
+  # config.vm.provision "shell", path: "#{github_url}/scripts/redis.sh", args: "persistent", run: "once"
   # NOTE: It is safe to run this to add persistence even if originally provisioned without persistence
 
 
@@ -290,35 +289,35 @@ Vagrant.configure("2") do |config|
   ##########
 
   # Install Beanstalkd
-  # config.vm.provision "shell", path: "#{github_url}/scripts/beanstalkd.sh"
+  # config.vm.provision "shell", path: "#{github_url}/scripts/beanstalkd.sh", run: "once"
 
   # Install Heroku Toolbelt
-  # config.vm.provision "shell", path: "https://toolbelt.heroku.com/install-ubuntu.sh"
+  # config.vm.provision "shell", path: "https://toolbelt.heroku.com/install-ubuntu.sh", run: "once"
 
   # Install Supervisord
-  # config.vm.provision "shell", path: "#{github_url}/scripts/supervisord.sh"
+  # config.vm.provision "shell", path: "#{github_url}/scripts/supervisord.sh", run: "once"
 
   # Install Kibana
-  # config.vm.provision "shell", path: "#{github_url}/scripts/kibana.sh"
+  # config.vm.provision "shell", path: "#{github_url}/scripts/kibana.sh", run: "once"
 
   # Install ØMQ
-  # config.vm.provision "shell", path: "#{github_url}/scripts/zeromq.sh"
+  # config.vm.provision "shell", path: "#{github_url}/scripts/zeromq.sh", run: "once"
 
   # Install RabbitMQ
-  config.vm.provision "shell", path: "#{github_url}/scripts/rabbitmq.sh", args: [rabbitmq_user, rabbitmq_password]
+  config.vm.provision "shell", path: "#{github_url}/scripts/rabbitmq.sh", args: [rabbitmq_user, rabbitmq_password], run: "once"
 
   ####
   # Additional Languages
   ##########
 
   # Install Nodejs
-  config.vm.provision "shell", path: "#{github_url}/scripts/nodejs.sh", privileged: false, args: nodejs_packages.unshift(nodejs_version, github_url)
+  config.vm.provision "shell", path: "#{github_url}/scripts/nodejs.sh", privileged: false, args: nodejs_packages.unshift(nodejs_version, github_url), run: "once"
 
   # Install Ruby Version Manager (RVM)
-  # config.vm.provision "shell", path: "#{github_url}/scripts/rvm.sh", privileged: false, args: ruby_gems.unshift(ruby_version)
+  # config.vm.provision "shell", path: "#{github_url}/scripts/rvm.sh", privileged: false, args: ruby_gems.unshift(ruby_version), run: "once"
 
   # Install Go Version Manager (GVM)
-  # config.vm.provision "shell", path: "#{github_url}/scripts/go.sh", privileged: false, args: [go_version]
+  # config.vm.provision "shell", path: "#{github_url}/scripts/go.sh", privileged: false, args: [go_version], run: "once"
 
   ####
   # Frameworks and Tooling
@@ -326,34 +325,34 @@ Vagrant.configure("2") do |config|
 
   # Provision Composer
   # You may pass a github auth token as the first argument
-  config.vm.provision "shell", path: "#{github_url}/scripts/composer.sh", privileged: false, args: [github_pat, composer_packages.join(" ")]
+  config.vm.provision "shell", path: "#{github_url}/scripts/composer.sh", privileged: false, args: [github_pat, composer_packages.join(" ")], run: "once"
 
   # Provision Laravel
-  # config.vm.provision "shell", path: "#{github_url}/scripts/laravel.sh", privileged: false, args: [server_ip, laravel_root_folder, public_folder, laravel_version]
+  # config.vm.provision "shell", path: "#{github_url}/scripts/laravel.sh", privileged: false, args: [server_ip, laravel_root_folder, public_folder, laravel_version], run: "once"
 
   # Provision Symfony
-  # config.vm.provision "shell", path: "#{github_url}/scripts/symfony.sh", privileged: false, args: [server_ip, symfony_root_folder, public_folder]
+  # config.vm.provision "shell", path: "#{github_url}/scripts/symfony.sh", privileged: false, args: [server_ip, symfony_root_folder, public_folder], run: "once"
 
   # Install Screen
-  # config.vm.provision "shell", path: "#{github_url}/scripts/screen.sh"
+  # config.vm.provision "shell", path: "#{github_url}/scripts/screen.sh", run: "once"
 
   # Install Mailcatcher
-  config.vm.provision "shell", path: "#{github_url}/scripts/mailcatcher.sh"
+  config.vm.provision "shell", path: "#{github_url}/scripts/mailcatcher.sh", run: "once"
 
   # Install git-ftp
-  config.vm.provision "shell", path: "#{github_url}/scripts/git-ftp.sh", privileged: false
+  config.vm.provision "shell", path: "#{github_url}/scripts/git-ftp.sh", privileged: false, run: "once"
 
   # Install Ansible
-  # config.vm.provision "shell", path: "#{github_url}/scripts/ansible.sh"
+  # config.vm.provision "shell", path: "#{github_url}/scripts/ansible.sh", run: "once"
 
   # Install Android
-  # config.vm.provision "shell", path: "#{github_url}/scripts/android.sh"
+  # config.vm.provision "shell", path: "#{github_url}/scripts/android.sh", run: "once"
 
   ####
   # Local Scripts
   # Any local scripts you may want to run post-provisioning.
   # Add these to the same directory as the Vagrantfile.
   ##########
-  # config.vm.provision "shell", path: "./local-script.sh"
+  # config.vm.provision "shell", path: "./local-script.sh", run: "once"
 
 end
