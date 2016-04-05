@@ -42,10 +42,13 @@ EOL
 sudo service mailcatcher start
 
 if [[ $PHP_IS_INSTALLED -eq 0 ]]; then
+	PHP_PATH=$1
+	PHP_CMD=$2
+	PHP_ENMOD=$3
 	# Make php use it to send mail
-    echo "sendmail_path = /usr/bin/env $(which catchmail)" | sudo tee /etc/php5/mods-available/mailcatcher.ini
-	sudo php5enmod mailcatcher
-	sudo service php5-fpm restart
+  echo "sendmail_path = /usr/bin/env $(which catchmail)" | sudo tee ${PHP_PATH}/mods-available/mailcatcher.ini
+	sudo $PHP_ENMOD mailcatcher
+	sudo service $PHP_CMD restart
 fi
 
 if [[ $APACHE_IS_INSTALLED -eq 0 ]]; then

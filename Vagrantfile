@@ -61,11 +61,13 @@ end
 server_swap = server_memory
 
 if php_version == "7.0"
-  php_path = "/etc/php/7.0"
-  php_cmd  = "php7.0-fpm"
+  php_path   = "/etc/php/7.0"
+  php_cmd    = "php7.0-fpm"
+  php_enmod  = "phpenmod"
 else
-  php_path = "/etc/php5"
-  php_cmd  = "php5-fpm"
+  php_path   = "/etc/php5"
+  php_cmd    = "php5-fpm"
+  php_enmod  = "php5enmod"
 end
 
 Vagrant.configure("2") do |config|
@@ -133,8 +135,9 @@ Vagrant.configure("2") do |config|
   config.vm.provision "shell", path: "#{github_url}/scripts/memcached.sh", run: "once"
   config.vm.provision "shell", path: "#{github_url}/scripts/rabbitmq.sh", args: [rabbitmq_user, rabbitmq_password], run: "once"
   config.vm.provision "shell", path: "#{github_url}/scripts/nodejs.sh", privileged: false, args: nodejs_packages.unshift(nodejs_version, github_url), run: "once"
+  config.vm.provision "shell", path: "#{github_url}/scripts/rvm.sh", privileged: false, args: ruby_gems.unshift(ruby_version), run: "once"
   config.vm.provision "shell", path: "#{github_url}/scripts/composer.sh", privileged: false, args: [github_pat, composer_packages.join(" ")], run: "once"
-  config.vm.provision "shell", path: "#{github_url}/scripts/mailcatcher.sh", run: "once"
+  config.vm.provision "shell", path: "#{github_url}/scripts/mailcatcher.sh", args: [php_path, php_cmd, php_enmod], run: "once"
   config.vm.provision "shell", path: "#{github_url}/scripts/git-ftp.sh", privileged: false, run: "once"
 
   # Local Provisioning
