@@ -6,8 +6,8 @@ vb_box_url            = "~/Boxes/ubuntu-14-04-x64-virtualbox.box"
 vm_box_url            = "~/Boxes/ubuntu-14-04-x64-vmware.box"
 
 # Server
-box_name              = "trusty64"
-guest_name            = "trusty"
+boxname              = "trusty64"
+guestname            = "trusty"
 hostname              = "trusty.dev"
 synced_folder         = "/var/www"
 public_folder         = "/vagrant"
@@ -68,10 +68,9 @@ else
 end
 
 Vagrant.configure("2") do |config|
-  config.vm.box = box_name
+  config.vm.box = boxname
   config.vm.hostname = hostname
-
-  config.vm.define guest_name do |the_tango|
+  config.vm.define guestname do |the_tango|
   end
 
   if Vagrant.has_plugin?("vagrant-hostmanager")
@@ -121,11 +120,10 @@ Vagrant.configure("2") do |config|
 
   # Remote Provisioning
   config.vm.provision "shell", path: "#{github_url}/scripts/base.sh", args: [github_url, server_swap, server_timezone], run: "once"
-  config.vm.provision "shell", path: "#{github_url}/scripts/base_box_optimizations.sh", privileged: true, run: "once"
   config.vm.provision "shell", path: "#{github_url}/scripts/php.sh", args: [php_timezone, hhvm, php_version, php_path, php_cmd], run: "once"
   config.vm.provision "shell", path: "#{github_url}/scripts/vim.sh", args: github_url, run: "once"
   config.vm.provision "shell", path: "#{github_url}/scripts/docker.sh", args: "permissions", run: "once"
-  config.vm.provision "shell", path: "#{github_url}/scripts/nginx.sh", args: [server_ip, public_folder, hostname, github_url], run: "once"
+  config.vm.provision "shell", path: "#{github_url}/scripts/nginx.sh", args: [server_ip, public_folder, hostname, github_url, php_path, php_cmd], run: "once"
   config.vm.provision "shell", path: "#{github_url}/scripts/mysql.sh", args: [mysql_root_password, mysql_version, mysql_enable_remote], run: "once"
   config.vm.provision "shell", path: "#{github_url}/scripts/pgsql.sh", args: pgsql_root_password, run: "once"
   config.vm.provision "shell", path: "#{github_url}/scripts/sqlite.sh", run: "once"
