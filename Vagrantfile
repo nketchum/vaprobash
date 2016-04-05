@@ -22,7 +22,7 @@ github_branch         = "nketchum/master"
 github_url            = "https://raw.githubusercontent.com/#{github_username}/#{github_repo}/#{github_branch}"
 
 # Databases
-mysql_version         = "5.5"
+mysql_version         = "5.6"
 mysql_root_password   = "123"
 mysql_enable_remote   = "true"
 pgsql_version         = "9.5"
