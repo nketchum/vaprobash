@@ -1,8 +1,15 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
+# Boxes
+vb_box_url            = "~/Boxes/ubuntu-14-04-x64-virtualbox.box"
+vm_box_url            = "~/Boxes/ubuntu-14-04-x64-vmware.box"
+
 # Server
+box_name              = "trusty64"
+guest_name            = "trusty"
 hostname              = "trusty.dev"
+synced_folder         = "/var/www"
 public_folder         = "/vagrant"
 server_ip             = "192.168.44.99"
 server_timezone       = "UTC"
@@ -17,24 +24,22 @@ github_url            = "https://raw.githubusercontent.com/#{github_username}/#{
 # Databases
 mysql_root_password   = "123"
 mysql_version         = "5.6"
-mysql_enable_remote   = "false"
+mysql_enable_remote   = "true"
 pgsql_root_password   = "123"
 mongo_version         = "3.0"
-mongo_enable_remote   = "false"
+mongo_enable_remote   = "true"
 
-# Langs and Pkgs
-composer_packages     = ["phpunit/phpunit:4.0.*"]
-go_version            = "latest"
+# Platform
+php_timezone          = server_timezone
+php_version           = "7.0"
 hhvm                  = "false"
+composer_packages     = ["phpunit/phpunit:4.0.*"]
 nodejs_packages       = ["grunt-cli", "gulp", "bower", "pm2"]
 nodejs_version        = "latest"
-php_timezone          = server_timezone
-php_version           = "5.6"
 rabbitmq_user         = "rabbitmq"
 rabbitmq_password     = "123"
 ruby_gems             = ["sass", "compass"]
 ruby_version          = "latest"
-sphinxsearch_version  = "rel22"
 
 ###
 # Experts-only starting here...
@@ -62,19 +67,17 @@ else
 end
 
 Vagrant.configure("2") do |config|
-  config.vm.box = "trusty.dev"
-  config.vm.define "trusty" do |the_tango|
-  end
+  config.vm.box = box_name
   config.vm.hostname = hostname
-  config.ssh.forward_agent = true
+
+  config.vm.define guest_name do |the_tango|
+  end
 
   if Vagrant.has_plugin?("vagrant-hostmanager")
     config.hostmanager.enabled = true
     config.hostmanager.manage_host = true
     config.hostmanager.ignore_private_ip = false
     config.hostmanager.include_offline = false
-  else
-    warn "Optional plugin 'vagrant-hostmanager' is not installed."
   end
 
   if Vagrant.has_plugin?("vagrant-auto_network")
@@ -84,7 +87,9 @@ Vagrant.configure("2") do |config|
     config.vm.network :forwarded_port, guest: 80, host: 8000
   end
 
-  config.vm.synced_folder "/var/www", "/vagrant",
+  config.ssh.forward_agent = true
+
+  config.vm.synced_folder synced_folder, public_folder,
     id: "core",
     :nfs => true,
     :mount_options => ['nolock,vers=3,udp,noatime,actimeo=2,fsc']
@@ -93,39 +98,24 @@ Vagrant.configure("2") do |config|
     config.vm.provision "file", source: "~/.gitconfig", destination: ".gitconfig"
   end
 
-  config.vm.provider :virtualbox do |vb|
+  config.vm.provider :virtualbox do |vb, override|
     vb.name = hostname
     vb.customize ["modifyvm", :id, "--cpus", server_cpus]
     vb.customize ["modifyvm", :id, "--memory", server_memory]
     vb.customize ["guestproperty", "set", :id, "/VirtualBox/GuestAdd/VBoxService/--timesync-set-threshold", 10000]
     vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
     vb.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
+    override.vm.box_url = vb_box_url
   end
 
   config.vm.provider "vmware_fusion" do |vb, override|
-    override.vm.box_url = "~/Boxes/ubuntu-14-04-x64-vmware.box"
     vb.vmx["memsize"]   = server_memory
+    override.vm.box_url = vm_box_url
   end
 
   if Vagrant.has_plugin?("vagrant-cachier")
     config.cache.scope = :box
-    config.cache.synced_folder_opts = {
-        type: :nfs,
-        mount_options: ['rw', 'vers=3', 'tcp', 'nolock']
-    }
-  else
-    warn "Optional plugin 'vagrant-cachier' is not installed."
-  end
-
-  config.vm.provider :digital_ocean do |provider, override|
-    override.ssh.private_key_path = '~/.ssh/id_rsa'
-    override.ssh.username         = 'vagrant'
-    override.vm.box               = 'digital_ocean'
-    override.vm.box_url           = "https://github.com/smdahlen/vagrant-digitalocean/raw/master/box/digital_ocean.box"
-    provider.token                = 'YOUR TOKEN'
-    provider.image                = 'ubuntu-14-04-x64'
-    provider.region               = 'nyc2'
-    provider.size                 = '512mb'
+    config.cache.synced_folder_opts = { type: :nfs, mount_options: ['rw', 'vers=3', 'tcp', 'nolock'] }
   end
 
   # Remote Provisioning
@@ -139,8 +129,8 @@ Vagrant.configure("2") do |config|
   config.vm.provision "shell", path: "#{github_url}/scripts/pgsql.sh", args: pgsql_root_password, run: "once"
   config.vm.provision "shell", path: "#{github_url}/scripts/sqlite.sh", run: "once"
   config.vm.provision "shell", path: "#{github_url}/scripts/mongodb.sh", args: [mongo_enable_remote, mongo_version, php_version, php_path, php_cmd], run: "once"
-  config.vm.provision "shell", path: "#{github_url}/scripts/memcached.sh", run: "once"
   config.vm.provision "shell", path: "#{github_url}/scripts/redis.sh", run: "once"
+  config.vm.provision "shell", path: "#{github_url}/scripts/memcached.sh", run: "once"
   config.vm.provision "shell", path: "#{github_url}/scripts/rabbitmq.sh", args: [rabbitmq_user, rabbitmq_password], run: "once"
   config.vm.provision "shell", path: "#{github_url}/scripts/nodejs.sh", privileged: false, args: nodejs_packages.unshift(nodejs_version, github_url), run: "once"
   config.vm.provision "shell", path: "#{github_url}/scripts/composer.sh", privileged: false, args: [github_pat, composer_packages.join(" ")], run: "once"
