@@ -7,13 +7,7 @@ echo ">>> Installing MySQL Server $2"
 mysql_package=mysql-server
 
 if [ $2 == "5.6" ]; then
-    # Add repo for MySQL 5.6
-	sudo add-apt-repository -y ppa:ondrej/mysql-5.6
-
-	# Update Again
-	sudo apt-get update
-
-	# Change package
+    # Change package
 	mysql_package=mysql-server-5.6
 fi
 

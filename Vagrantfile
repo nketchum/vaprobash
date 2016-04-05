@@ -22,24 +22,25 @@ github_branch         = "nketchum/master"
 github_url            = "https://raw.githubusercontent.com/#{github_username}/#{github_repo}/#{github_branch}"
 
 # Databases
+mysql_version         = "5.5"
 mysql_root_password   = "123"
-mysql_version         = "5.6"
 mysql_enable_remote   = "true"
+pgsql_version         = "9.5"
 pgsql_root_password   = "123"
 mongo_version         = "3.0"
 mongo_enable_remote   = "true"
 
-# Platform
-php_timezone          = server_timezone
-php_version           = "7.0"
+# Packages
 hhvm                  = "false"
+php_version           = "7.0"
+php_timezone          = server_timezone
 composer_packages     = ["phpunit/phpunit:4.0.*"]
-nodejs_packages       = ["grunt-cli", "gulp", "bower", "pm2"]
 nodejs_version        = "latest"
+nodejs_packages       = ["grunt-cli", "gulp", "bower", "pm2"]
+ruby_version          = "latest"
+ruby_gems             = ["sass", "compass"]
 rabbitmq_user         = "rabbitmq"
 rabbitmq_password     = "123"
-ruby_gems             = ["sass", "compass"]
-ruby_version          = "latest"
 
 ###
 # Experts-only starting here...
@@ -125,7 +126,7 @@ Vagrant.configure("2") do |config|
   config.vm.provision "shell", path: "#{github_url}/scripts/docker.sh", args: "permissions", run: "once"
   config.vm.provision "shell", path: "#{github_url}/scripts/nginx.sh", args: [server_ip, public_folder, hostname, github_url, php_path, php_cmd], run: "once"
   config.vm.provision "shell", path: "#{github_url}/scripts/mysql.sh", args: [mysql_root_password, mysql_version, mysql_enable_remote], run: "once"
-  config.vm.provision "shell", path: "#{github_url}/scripts/pgsql.sh", args: pgsql_root_password, run: "once"
+  config.vm.provision "shell", path: "#{github_url}/scripts/pgsql.sh", args: [pgsql_root_password, pgsql_version], run: "once"
   config.vm.provision "shell", path: "#{github_url}/scripts/sqlite.sh", run: "once"
   config.vm.provision "shell", path: "#{github_url}/scripts/mongodb.sh", args: [mongo_enable_remote, mongo_version, php_version, php_path, php_cmd], run: "once"
   config.vm.provision "shell", path: "#{github_url}/scripts/redis.sh", run: "once"
