@@ -42,16 +42,16 @@ sphinxsearch_version  = "rel22"
 
 host_os = RbConfig::CONFIG['host_os']
 if host_os =~ /darwin/
-  server_cpus         = `sysctl -n hw.ncpu`.to_i
-  server_memory       = `sysctl -n hw.memsize`.to_i / 1024 / 1024 / 8
+  server_cpus = `sysctl -n hw.ncpu`.to_i
+  server_memory = `sysctl -n hw.memsize`.to_i / 1024 / 1024 / 8
 elsif host_os =~ /linux/
-  server_cpus         = `nproc`.to_i
-  server_memory       = `grep 'MemTotal' /proc/meminfo | sed -e 's/MemTotal://' -e 's/ kB//'`.to_i / 1024 / 8
+  server_cpus = `nproc`.to_i
+  server_memory = `grep 'MemTotal' /proc/meminfo | sed -e 's/MemTotal://' -e 's/ kB//'`.to_i / 1024 / 8
 else
-  server_cpus         = 1
-  server_memory       = 512
+  server_cpus = 1
+  server_memory = 512
 end
-server_swap           = server_memory
+server_swap = server_memory
 
 if php_version == "7.0"
   php_path = "/etc/php/7.0"
@@ -74,7 +74,7 @@ Vagrant.configure("2") do |config|
     config.hostmanager.ignore_private_ip = false
     config.hostmanager.include_offline = false
   else
-    warn "Recommended plugin 'vagrant-hostmanager' is not installed."
+    warn "Optional plugin 'vagrant-hostmanager' is not installed."
   end
 
   if Vagrant.has_plugin?("vagrant-auto_network")
@@ -82,12 +82,6 @@ Vagrant.configure("2") do |config|
   else
     config.vm.network :private_network, ip: server_ip
     config.vm.network :forwarded_port, guest: 80, host: 8000
-    #config.vm.network :forwarded_port, guest: 3000, host: 3000   # Node
-    #config.vm.network :forwarded_port, guest: 3306, host: 3306   # MySQL
-    #config.vm.network :forwarded_port, guest: 5432, host: 5432   # PostgreSQL
-    #config.vm.network :forwarded_port, guest: 5672, host: 5672   # RabbitMQ
-    #config.vm.network :forwarded_port, guest: 6379, host: 6379   # Redis
-    #config.vm.network :forwarded_port, guest: 27017, host: 27017 # MongoDB
   end
 
   config.vm.synced_folder "/var/www", "/vagrant",
@@ -120,7 +114,7 @@ Vagrant.configure("2") do |config|
         mount_options: ['rw', 'vers=3', 'tcp', 'nolock']
     }
   else
-    warn "Recommeded plugin 'vagrant-cachier' is not installed."
+    warn "Optional plugin 'vagrant-cachier' is not installed."
   end
 
   config.vm.provider :digital_ocean do |provider, override|
