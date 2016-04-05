@@ -6,9 +6,6 @@ PHP_CMD=$2
 echo ">>> Installing Additional Packages"
 sudo apt-get install htop iotop
 
-echo ">>> Installing Drush Utility"
-sudo composer global require drush/drush:dev-master
-
 echo ">>> Installing Drupal Console"
 curl https://drupalconsole.com/installer -L -o drupal.phar
 sudo mv drupal.phar /usr/local/bin/drupal

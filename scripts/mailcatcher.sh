@@ -10,10 +10,6 @@ PHP_IS_INSTALLED=$1
 apache2 -v > /dev/null 2>&1
 APACHE_IS_INSTALLED=$?
 
-# Installing dependency
-# -qq implies -y --force-yes
-sudo apt-get install -qq libsqlite3-dev ruby1.9.1-dev
-
 if $(which rvm) -v > /dev/null 2>&1; then
 	echo ">>>>Installing with RVM"
 	$(which rvm) default@mailcatcher --create do gem install --no-rdoc --no-ri mailcatcher
@@ -23,7 +19,7 @@ else
 	if ! gem -v > /dev/null 2>&1; then sudo aptitude install -y libgemplugin-ruby; fi
 
 	# Install
-	gem install --no-rdoc --no-ri mailcatcher
+	sudo gem install --no-rdoc --no-ri mailcatcher
 fi
 
 # Make it start on boot
@@ -46,7 +42,7 @@ if [[ $PHP_IS_INSTALLED -eq 0 ]]; then
 	PHP_CMD=$2
 	PHP_ENMOD=$3
 	# Make php use it to send mail
-  echo "sendmail_path = /usr/bin/env $(which catchmail)" | sudo tee "${PHP_PATH}"/mods-available/mailcatcher.ini
+  echo "sendmail_path = /usr/bin/env $(which catchmail)" | sudo tee "${PHP_PATH}/mods-available/mailcatcher.ini"
 	sudo $PHP_ENMOD mailcatcher
 	sudo service $PHP_CMD restart
 fi
