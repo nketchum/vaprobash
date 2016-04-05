@@ -24,7 +24,7 @@ sudo apt-get install -qq postgresql postgresql-contrib
 # Configure PostgreSQL
 
 # Get the version number
-POSTGRE_VERSION=$(find /etc/postgresql -maxdepth 1 -mindepth 1 -type d -exec basename {} \; | tail -n 1)
+POSTGRE_VERSION=$(sudo find /etc/postgresql -maxdepth 1 -mindepth 1 -type d -exec basename {} \; | tail -n 1)
 
 # Listen for localhost connections
 sudo sed -i "s/#listen_addresses = 'localhost'/listen_addresses = '*'/g" /etc/postgresql/$POSTGRE_VERSION/main/postgresql.conf
