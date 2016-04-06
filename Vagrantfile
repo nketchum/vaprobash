@@ -89,6 +89,8 @@ Vagrant.configure("2") do |config|
     config.vm.network :private_network, ip: server_ip
     config.vm.network :forwarded_port, guest: 80, host: 8000
     config.vm.network :forwarded_port, guest: 1080, host: 1080 # Mailcatcher
+    config.vm.network :forwarded_port, guest: 3000, host: 3000 # Node
+    config.vm.network :forwarded_port, guest: 3306, host: 3307 # MySQL
   end
 
   config.ssh.forward_agent = true
