@@ -55,25 +55,25 @@ else
     # -qq implies -y --force-yes
     if [ $PHP_VERSION == "7.0" ]; then
         # xdebug not supported yet
-        sudo apt-get install -qq php7.0-cli php7.0-fpm php7.0-mysql php7.0-pgsql php7.0-sqlite php7.0-curl php7.0-gd php7.0-gmp php7.0-mcrypt php-memcached php-imagick php7.0-intl php7.0-xml
+        sudo apt-get install -qq php7.0-cli php7.0-fpm php7.0-dev php-pear php7.0-mysql php7.0-pgsql php7.0-sqlite php7.0-curl php7.0-gd php7.0-gmp php7.0-mcrypt php-memcached php-imagick php7.0-intl php7.0-xml
     else
-        sudo apt-get install -qq php5-cli php5-fpm php5-mysql php5-pgsql php5-sqlite php5-curl php5-gd php5-gmp php5-mcrypt php5-memcached php5-imagick php5-intl php5-common php5-cgi php5-imap php5-ldap php5-json
+        sudo apt-get install -qq php5-cli php5-fpm php5-dev php-pear php5-mysql php5-pgsql php5-sqlite php5-curl php5-gd php5-gmp php5-mcrypt php5-memcached php5-imagick php5-intl php5-common php5-cgi php5-imap php5-ldap php5-json
     fi
 
     # Set PHP FPM to listen on TCP instead of Socket
-    sudo sed -i "s/listen =.*/listen = 127.0.0.1:9000/" $PHP_PATH/fpm/pool.d/www.conf
+    sudo sed -i "s/listen =.*/listen = 127.0.0.1:9000/" "$PHP_PATH"/fpm/pool.d/www.conf
 
     # Set PHP FPM allowed clients IP address
-    sudo sed -i "s/;listen.allowed_clients/listen.allowed_clients/" $PHP_PATH/fpm/pool.d/www.conf
+    sudo sed -i "s/;listen.allowed_clients/listen.allowed_clients/" "$PHP_PATH"/fpm/pool.d/www.conf
 
     # Set run-as user for PHP5-FPM processes to user/group "vagrant"
     # to avoid permission errors from apps writing to files
-    sudo sed -i "s/user = www-data/user = vagrant/" $PHP_PATH/fpm/pool.d/www.conf
-    sudo sed -i "s/group = www-data/group = vagrant/" $PHP_PATH/fpm/pool.d/www.conf
+    sudo sed -i "s/user = www-data/user = vagrant/" "$PHP_PATH"/fpm/pool.d/www.conf
+    sudo sed -i "s/group = www-data/group = vagrant/" "$PHP_PATH"/fpm/pool.d/www.conf
 
-    sudo sed -i "s/listen\.owner.*/listen.owner = vagrant/" $PHP_PATH/fpm/pool.d/www.conf
-    sudo sed -i "s/listen\.group.*/listen.group = vagrant/" $PHP_PATH/fpm/pool.d/www.conf
-    sudo sed -i "s/listen\.mode.*/listen.mode = 0666/" $PHP_PATH/fpm/pool.d/www.conf
+    sudo sed -i "s/listen\.owner.*/listen.owner = vagrant/" "$PHP_PATH"/fpm/pool.d/www.conf
+    sudo sed -i "s/listen\.group.*/listen.group = vagrant/" "$PHP_PATH"/fpm/pool.d/www.conf
+    sudo sed -i "s/listen\.mode.*/listen.mode = 0666/" "$PHP_PATH"/fpm/pool.d/www.conf
 
 
     if [ $PHP_VERSION == "5.5" ] || [ $PHP_VERSION == "5.6" ]; then
@@ -95,12 +95,12 @@ EOF
     fi
 
     # PHP Error Reporting Config
-    sudo sed -i "s/error_reporting = .*/error_reporting = E_ALL/" $PHP_PATH/fpm/php.ini
-    sudo sed -i "s/display_errors = .*/display_errors = On/" $PHP_PATH/fpm/php.ini
+    sudo sed -i "s/error_reporting = .*/error_reporting = E_ALL/" "$PHP_PATH"/fpm/php.ini
+    sudo sed -i "s/display_errors = .*/display_errors = On/" "$PHP_PATH"/fpm/php.ini
 
     # PHP Date Timezone
-    sudo sed -i "s/;date.timezone =.*/date.timezone = ${PHP_TIMEZONE/\//\\/}/" $PHP_PATH/fpm/php.ini
-    sudo sed -i "s/;date.timezone =.*/date.timezone = ${PHP_TIMEZONE/\//\\/}/" $PHP_PATH/cli/php.ini
+    sudo sed -i "s/;date.timezone =.*/date.timezone = ${PHP_TIMEZONE/\//\\/}/" "$PHP_PATH"/fpm/php.ini
+    sudo sed -i "s/;date.timezone =.*/date.timezone = ${PHP_TIMEZONE/\//\\/}/" "$PHP_PATH"/cli/php.ini
 
     sudo service $PHP_CMD restart
 

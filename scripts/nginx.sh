@@ -47,7 +47,7 @@ sudo apt-get install -qq nginx
 # Turn off sendfile to be more compatible with Windows, which can't use NFS
 sed -i 's/sendfile on;/sendfile off;/' /etc/nginx/nginx.conf
 
-# Set run-as user for PHP5-FPM processes to user/group "vagrant"
+# Set run-as user for PHP-FPM processes to user/group "vagrant"
 # to avoid permission errors from apps writing to files
 sed -i "s/user www-data;/user vagrant;/" /etc/nginx/nginx.conf
 sed -i "s/# server_names_hash_bucket_size.*/server_names_hash_bucket_size 64;/" /etc/nginx/nginx.conf
@@ -72,9 +72,9 @@ if [[ $HHVM_IS_INSTALLED -ne 0 && $PHP_IS_INSTALLED -eq 0 ]]; then
     # PHP-FPM Config for Nginx
     PHP_PATH=$5
     PHP_CMD=$6
-    sed -i "s/;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/" ${PHP_PATH}/fpm/php.ini
+    sed -i "s/;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/" "${PHP_PATH}"/fpm/php.ini
 
-    sudo service $PHP_CMD restart
+    sudo service "$PHP_CMD" restart
 fi
 
 sudo service nginx restart
