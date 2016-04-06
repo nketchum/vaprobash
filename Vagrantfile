@@ -140,7 +140,7 @@ Vagrant.configure("2") do |config|
   config.vm.provision "shell", path: "#{github_url}/scripts/nodejs.sh", privileged: false, args: nodejs_packages.unshift(nodejs_version, github_url), run: "once"
   config.vm.provision "shell", path: "#{github_url}/scripts/rvm.sh", privileged: false, args: ruby_gems.unshift(ruby_version), run: "once"
   config.vm.provision "shell", path: "#{github_url}/scripts/composer.sh", privileged: false, args: [github_pat, composer_packages.join(" ")], run: "once"
-  config.vm.provision "shell", path: "#{github_url}/scripts/mailcatcher.sh", privileged: false, args: [php_path, php_cmd, php_enmod], run: "once"
+  config.vm.provision "shell", path: "#{github_url}/scripts/mailcatcher.sh", privileged: false, args: [php_version, php_path, php_cmd, php_enmod], run: "once"
   config.vm.provision "shell", path: "#{github_url}/scripts/git-ftp.sh", privileged: false, run: "once"
 
   # Local Scripts

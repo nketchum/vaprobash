@@ -5,6 +5,9 @@ echo ">>> Installing Mailcatcher"
 # Test if PHP is installed
 php -v > /dev/null 2>&1
 PHP_IS_INSTALLED=$1
+PHP_PATH=$2
+PHP_CMD=$3
+PHP_ENMOD=$4
 
 # Test if Apache is installed
 apache2 -v > /dev/null 2>&1
@@ -38,12 +41,8 @@ EOL
 sudo service mailcatcher start
 
 if [[ $PHP_IS_INSTALLED -eq 0 ]]; then
-	PHP_PATH=$1
-	PHP_CMD=$2
-	PHP_ENMOD=$3
 	# Make php use it to send mail
-  echo "sendmail_path = /usr/bin/env $(which catchmail)" > ~/mailcatcher.ini
-  sudo mv ~/mailcatcher.ini "${PHP_PATH}"/mods-available/mailcatcher.ini
+  echo "sendmail_path = /usr/bin/env $(which catchmail)" | sudo tee "${PHP_PATH}"/mods-available/mailcatcher.ini
 	sudo $PHP_ENMOD mailcatcher
 	sudo service $PHP_CMD restart
 fi
