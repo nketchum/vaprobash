@@ -1,6 +1,16 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
+# Plugins (required)
+plugins = { 'vagrant-bindfs' => nil, 'vagrant-reload' => nil }
+plugins.each do |plugin, version|
+  unless Vagrant.has_plugin? plugin
+    error = "Required plugin '#{plugin}' not installed. Install with: 'vagrant plugin install #{plugin}'"
+    error += " --plugin-version #{version}" if version
+    raise error
+  end
+end
+
 # Boxes
 vb_box_url            = "~/Boxes/ubuntu-14-04-x64-virtualbox.box"
 vm_box_url            = "~/Boxes/ubuntu-14-04-x64-vmware.box"
@@ -98,6 +108,19 @@ Vagrant.configure("2") do |config|
     id: "core",
     :nfs => true,
     :mount_options => ['nolock,vers=3,udp,noatime,actimeo=2,fsc']
+
+  if Vagrant.has_plugin?("vagrant-bindfs")
+    config.bindfs.bind_folder synced_folder, public_folder,
+      after: :provision,
+      :owner => "vagrant",
+      :group => "vagrant",
+      :perms => "u=rwX:g=rwX:o=rD",
+      :'create-with-perms' => "u=rwx:g=rwx:o=rD",
+      :'create-as-user' => true,
+      :'chown-ignore' => true,
+      :'chgrp-ignore' => true,
+      :'chmod-ignore' => true
+  end
 
   if File.file?(File.expand_path("~/.gitconfig"))
     config.vm.provision "file", source: "~/.gitconfig", destination: ".gitconfig"
