@@ -166,7 +166,6 @@ Vagrant.configure("2") do |config|
 
   # Local Scripts
   config.vm.provision "shell", path: "./local/local.sh", privileged: false, args: [php_path, php_cmd], run: "once"
-  config.vm.provision "shell", path: "./local/sites.sh", privileged: false, run: "once"
 
   # System Restart
   if Vagrant.has_plugin?("vagrant-reload")
@@ -175,5 +174,8 @@ Vagrant.configure("2") do |config|
 
   # Cleanup
   config.vm.provision "shell", path: "#{github_url}/scripts/cleanup.sh"
+
+  # Install Sites
+  config.vm.provision "shell", path: "./local/sites.sh", privileged: false, run: "once"
 
 end
