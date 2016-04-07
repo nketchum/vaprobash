@@ -233,9 +233,6 @@ Vagrant.configure("2") do |config|
   # Provision Docker
   # config.vm.provision "shell", path: "#{github_url}/scripts/docker.sh", args: "permissions"
 
-  # Provision docker-compose
-  # config.vm.provision "shell", path: "#{github_url}/scripts/docker-compose.sh"
-
 
   ####
   # Web Servers
@@ -384,42 +381,13 @@ Vagrant.configure("2") do |config|
   # Install Android
   # config.vm.provision "shell", path: "#{github_url}/scripts/android.sh"
 
-  # Install Maven
-  # config.vm.provision "shell", path: "#{github_url}/scripts/maven.sh"
-
-  # Install M4
-  # config.vm.provision "shell", path: "#{github_url}/scripts/m4.sh"
-
-  # Install Puppet Client
-  # config.vm.provision "shell", path: "#{github_url}/scripts/puppet-client.sh"
-
-  # Install wkhtml2pdf
-  # config.vm.provision "shell", path: "#{github_url}/scripts/wkhtmltopdf.sh"
-
-  # Install tutum-cli
-  # config.vm.provision "shell", path: "#{github_url}/scripts/tutum-cli.sh"
-
-  # Install phpMyAdmin
-  # config.vm.provision "shell", path: "#{github_url}/scripts/phpmyadmin.sh", args: [mysql_root_password]
-
-  # Install docker-nuke
-  # config.vm.provision "shell", path: "#{github_url}/scripts/docker-nuke.sh"
-
-
-  ####
-  # Customization
-  ##########
-
-  #Corporate settings
-  config.vm.provision "shell", path: "#{github_url}/scripts/whatwedo.sh"
-
 
   ####
   # Local Scripts
   # Any local scripts you may want to run post-provisioning.
   # Add these to the same directory as the Vagrantfile.
   ##########
-  # config.vm.provision "shell", path: "./vm-init.sh"
+  # config.vm.provision "shell", path: "./local-script.sh"
 
 
   ####

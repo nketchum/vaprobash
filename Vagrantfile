@@ -88,8 +88,6 @@ Vagrant.configure("2") do |config|
     config.vm.network :private_network, :ip => "0.0.0.0", :auto_network => true
   else
     config.vm.network :private_network, ip: server_ip
-    config.vm.network :forwarded_port, guest: 80, host: 8000
-    config.vm.network :forwarded_port, guest: 1080, host: 1080 # Mailcatcher
     config.vm.network :forwarded_port, guest: 3000, host: 3000 # Node
     config.vm.network :forwarded_port, guest: 3306, host: 3307 # MySQL
   end
@@ -144,7 +142,8 @@ Vagrant.configure("2") do |config|
   config.vm.provision "shell", path: "#{github_url}/scripts/mailcatcher.sh", privileged: false, args: [php_path, php_cmd, php_enmod], run: "once"
 
   # Local Scripts
-  config.vm.provision "shell", path: "./local-script.sh", privileged: false, args: [php_path, php_cmd], run: "once"
+  config.vm.provision "shell", path: "./local/local.sh", privileged: false, args: [php_path, php_cmd], run: "once"
+  config.vm.provision "shell", path: "./local/sites.sh", privileged: false, run: "once"
 
   # System Restart
   if Vagrant.has_plugin?("vagrant-reload")

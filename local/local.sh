@@ -16,7 +16,7 @@ printf "\n\n#Drupal Console\nsource \"\$HOME/.console/console.rc\"" >> ~/.profil
 echo ">>> Configuring Environment"
 printf "\n\n# Export Misc. Binaries\nexport PATH=\"\$PATH:./bin:./.bin:\$HOME/bin:\$HOME/.bin\"" >> ~/.profile
 sudo sed -i "s/;always_populate_raw_post_data = .*/always_populate_raw_post_data = -1/" "${PHP_PATH}/fpm/php.ini"
-sudo service $PHP_CMD restart
+sudo service $PHP_CMD reload
 
 echo ">>> Configuring Home Directory"
 touch ~/.hushlogin
