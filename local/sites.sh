@@ -4,8 +4,8 @@ SITES_AVAIL="/etc/nginx/sites-available"
 
 # Normal Servers
 
-sudo ngxcb -d /vagrant/swedgen/src -n swedgen.dev -s swedgen.dev -e
-sudo ngxcb -d /vagrant/swidgen -n swidgen.dev -s swidgen.dev -e
+sudo ngxcb -d /var/www/swedgen/src -n swedgen.dev -s swedgen.dev -e
+sudo ngxcb -d /var/www/swidgen -n swidgen.dev -s swidgen.dev -e
 
 # Proxy Servers
 
@@ -26,6 +26,6 @@ sudo nginx-generator \
   --var port=3031 \
   "${SITES_AVAIL}"/nodeauth.dev
 sudo ngxen nodeauth.dev
-cd /vagrant/nodeauth
+cd /var/www/nodeauth
 npm start
 cd -

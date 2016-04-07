@@ -16,11 +16,12 @@ vb_box_url            = "~/Boxes/ubuntu-14-04-x64-virtualbox.box"
 vm_box_url            = "~/Boxes/ubuntu-14-04-x64-vmware.box"
 
 # Server
-boxname              = "trusty64"
-guestname            = "trusty"
+boxname               = "trusty64"
+guestname             = "trusty"
 hostname              = "trusty.dev"
-synced_folder         = "/var/www"
-public_folder         = "/vagrant"
+synced_folder         = "/Users/nketchum/Sites"
+vagrant_folder        = "/vagrant"
+public_folder         = "/var/www"
 server_ip             = "192.168.44.99"
 server_timezone       = "UTC"
 
@@ -104,22 +105,17 @@ Vagrant.configure("2") do |config|
 
   config.ssh.forward_agent = true
 
-  config.vm.synced_folder synced_folder, public_folder,
+  config.vm.synced_folder synced_folder, vagrant_folder,
     id: "core",
-    :nfs => true,
-    :mount_options => ['nolock,vers=3,udp,noatime,actimeo=2,fsc']
+    :nfs => true
 
   if Vagrant.has_plugin?("vagrant-bindfs")
-    config.bindfs.bind_folder synced_folder, public_folder,
+    config.bindfs.bind_folder vagrant_folder, public_folder,
       after: :provision,
-      :owner => "vagrant",
-      :group => "vagrant",
-      :perms => "u=rwX:g=rwX:o=rD",
-      :'create-with-perms' => "u=rwx:g=rwx:o=rD",
-      :'create-as-user' => true,
-      :'chown-ignore' => true,
-      :'chgrp-ignore' => true,
-      :'chmod-ignore' => true
+      force_user: "vagrant",
+      force_group: "vagrant",
+      perms: "u=rwX:g=rwX:o=rD",
+      o: 'nonempty'
   end
 
   if File.file?(File.expand_path("~/.gitconfig"))
@@ -143,7 +139,7 @@ Vagrant.configure("2") do |config|
 
   if Vagrant.has_plugin?("vagrant-cachier")
     config.cache.scope = :box
-    config.cache.synced_folder_opts = { type: :nfs, mount_options: ['rw', 'vers=3', 'tcp', 'nolock'] }
+    config.cache.synced_folder_opts = { type: :nfs }
   end
 
   # Remote Scripts
