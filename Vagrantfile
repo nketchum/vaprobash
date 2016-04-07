@@ -34,11 +34,11 @@ mongo_enable_remote   = "true"
 hhvm                  = "false"
 php_version           = "7.0"
 php_timezone          = server_timezone
-composer_packages     = ["phpunit/phpunit:4.0.*", "drush/drush:dev-master"]
+composer_packages     = ["phpunit/phpunit:4.0.*", "drush/drush:dev-master", "drush/config-extra:dev-master"]
 nodejs_version        = "latest"
-nodejs_packages       = ["grunt-cli", "gulp", "bower", "pm2"]
+nodejs_packages       = ["grunt-cli", "gulp", "bower", "pm2", "nginx-generator"]
 ruby_version          = "latest"
-ruby_gems             = ["sass", "compass"]
+ruby_gems             = []
 rabbitmq_user         = "rabbitmq"
 rabbitmq_password     = "123"
 
@@ -142,7 +142,6 @@ Vagrant.configure("2") do |config|
   config.vm.provision "shell", path: "#{github_url}/scripts/rvm.sh", privileged: false, args: ruby_gems.unshift(ruby_version), run: "once"
   config.vm.provision "shell", path: "#{github_url}/scripts/composer.sh", privileged: false, args: [github_pat, composer_packages.join(" ")], run: "once"
   config.vm.provision "shell", path: "#{github_url}/scripts/mailcatcher.sh", privileged: false, args: [php_version, php_path, php_cmd, php_enmod], run: "once"
-  config.vm.provision "shell", path: "#{github_url}/scripts/git-ftp.sh", privileged: false, run: "once"
 
   # Local Scripts
   config.vm.provision "shell", path: "./local-script.sh", privileged: false, args: [php_path, php_cmd], run: "once"

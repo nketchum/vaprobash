@@ -8,6 +8,7 @@ apt-key add rabbitmq-signing-key-public.asc
 echo "deb http://www.rabbitmq.com/debian/ testing main" > /etc/apt/sources.list.d/rabbitmq.list
 apt-get update
 apt-get install rabbitmq-server
+rm rabbitmq-signing-key-public.asc
 
 rabbitmqctl add_user $1 $2
 rabbitmqctl set_permissions -p / $1 ".*" ".*" ".*"

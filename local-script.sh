@@ -21,7 +21,6 @@ sudo service $PHP_CMD restart
 echo ">>> Configuring Home Directory"
 touch ~/.hushlogin
 ln -sf /vagrant ~/www
-ln -sf /vagrant/scripts/bin ~/.bin
 if [ -e ~/.bash_profile ]; then sudo rm ~/.bash_profile; fi
 if [ -e ~/.zshrc ]; then sudo rm ~/.zshrc; fi
 if [ -e ~/.zlogin ]; then sudo rm ~/.zlogin; fi
