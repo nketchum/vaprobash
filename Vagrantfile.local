@@ -1,0 +1,40 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+github_pat            = "7ae6592c6da0055e094b5c53533733b47c34e7b0"
+github_username       = "nketchum"
+github_repo           = "Vaprobash"
+github_branch         = "nketchum/master"
+github_url            = "https://raw.githubusercontent.com/#{github_username}/#{github_repo}/#{github_branch}"
+
+# Remote Scripts
+config.vm.provision "shell", path: "#{github_url}/scripts/base.sh", args: [github_url, server_swap, server_timezone], run: "once"
+config.vm.provision "shell", path: "#{github_url}/scripts/php.sh", args: [php_timezone, hhvm, php_version, php_path, php_cmd], run: "once"
+config.vm.provision "shell", path: "#{github_url}/scripts/vim.sh", args: github_url, run: "once"
+config.vm.provision "shell", path: "#{github_url}/scripts/docker.sh", args: "permissions", run: "once"
+config.vm.provision "shell", path: "#{github_url}/scripts/nginx.sh", args: [server_ip, public_folder, hostname, github_url, php_path, php_cmd], run: "once"
+config.vm.provision "shell", path: "#{github_url}/scripts/mysql.sh", args: [mysql_root_password, mysql_version, mysql_enable_remote], run: "once"
+config.vm.provision "shell", path: "#{github_url}/scripts/pgsql.sh", args: [pgsql_root_password, pgsql_version], run: "once"
+config.vm.provision "shell", path: "#{github_url}/scripts/sqlite.sh", run: "once"
+config.vm.provision "shell", path: "#{github_url}/scripts/mongodb.sh", args: [mongo_enable_remote, mongo_version, php_path, php_cmd], run: "once"
+config.vm.provision "shell", path: "#{github_url}/scripts/redis.sh", run: "once"
+config.vm.provision "shell", path: "#{github_url}/scripts/memcached.sh", run: "once"
+config.vm.provision "shell", path: "#{github_url}/scripts/rabbitmq.sh", args: [rabbitmq_user, rabbitmq_password], run: "once"
+config.vm.provision "shell", path: "#{github_url}/scripts/nodejs.sh", privileged: false, args: nodejs_packages.unshift(nodejs_version, github_url), run: "once"
+config.vm.provision "shell", path: "#{github_url}/scripts/rvm.sh", privileged: false, args: ruby_gems.unshift(ruby_version), run: "once"
+config.vm.provision "shell", path: "#{github_url}/scripts/composer.sh", privileged: false, args: [github_pat, composer_packages.join(" ")], run: "once"
+config.vm.provision "shell", path: "#{github_url}/scripts/mailcatcher.sh", privileged: false, args: [php_path, php_cmd, php_enmod], run: "once"
+
+# Local Scripts
+config.vm.provision "shell", path: "./local/local.sh", privileged: false, args: [php_path, php_cmd], run: "once"
+
+# System Restart
+if Vagrant.has_plugin?("vagrant-reload")
+  config.vm.provision :reload
+end
+
+# Cleanup
+config.vm.provision "shell", path: "#{github_url}/scripts/cleanup.sh"
+
+# Install Sites
+config.vm.provision "shell", path: "./local/sites.sh", privileged: false, run: "once"

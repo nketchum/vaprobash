@@ -107,13 +107,13 @@ Vagrant.configure("2") do |config|
 
   config.vm.synced_folder synced_folder, vagrant_folder,
     id: "core",
-    :nfs => true
+    :nfs => true,
 
   if Vagrant.has_plugin?("vagrant-bindfs")
     config.bindfs.bind_folder vagrant_folder, public_folder,
       after: :provision,
-      force_user: "vagrant",
-      force_group: "vagrant",
+      force_user: "www-data",
+      force_group: "www-data",
       perms: "u=rwX:g=rwX:o=rD",
       o: 'nonempty'
   end
