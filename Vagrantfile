@@ -12,8 +12,8 @@ plugins.each do |plugin, version|
 end
 
 # Boxes
-vb_box_url            = "~/Boxes/ubuntu-14-04-x64-virtualbox.box"
-vm_box_url            = "~/Boxes/ubuntu-14-04-x64-vmware.box"
+vb_box_url            = "~/Machines/Boxes/ubuntu-14-04-x64-virtualbox.box"
+vm_box_url            = "~/Machines/Boxes/ubuntu-14-04-x64-vmware.box"
 
 # Server
 boxname               = "trusty64"
@@ -107,7 +107,7 @@ Vagrant.configure("2") do |config|
 
   config.vm.synced_folder synced_folder, vagrant_folder,
     id: "core",
-    :nfs => true,
+    :nfs => true
 
   if Vagrant.has_plugin?("vagrant-bindfs")
     config.bindfs.bind_folder vagrant_folder, public_folder,
