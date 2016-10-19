@@ -3,12 +3,10 @@
 SITES_AVAIL="/etc/nginx/sites-available"
 
 # Normal Servers
-
-sudo ngxcb -d /var/www/swedgen/src -n swedgen.dev -s swedgen.dev -e
-sudo ngxcb -d /var/www/swidgen -n swidgen.dev -s swidgen.dev -e
+sudo ngxcb -d /var/www/drupal.dev/web -n drupal.dev -s drupal.dev -e
+sudo ngxcb -d /var/www/drupal.dev/web -n marlonow.dev -s marlonow.dev -e
 
 # Proxy Servers
-
 sudo nginx-generator \
   --name mailcatcher \
   --domain mail.dev \
@@ -17,15 +15,3 @@ sudo nginx-generator \
   --var port=1080 \
   "${SITES_AVAIL}"/mailcatcher
 sudo ngxen mailcatcher
-
-sudo nginx-generator \
-  --name nodeauth.dev \
-  --domain nodeauth.dev \
-  --type proxy \
-  --var host=localhost \
-  --var port=3031 \
-  "${SITES_AVAIL}"/nodeauth.dev
-sudo ngxen nodeauth.dev
-cd /var/www/nodeauth
-npm start
-cd -
